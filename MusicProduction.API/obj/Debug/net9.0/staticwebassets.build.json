@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "N5mnhQzIAQTbuLWdnvvueNaUSnKTtL4WM0uPNSQhTKA=",
+  "Source": "MusicProduction.API",
+  "BasePath": "_content/MusicProduction.API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

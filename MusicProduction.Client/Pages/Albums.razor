@@ -1,0 +1,92 @@
+@page "/albums"
+@using MusicProduction.Client.Models
+@using MusicProduction.Client.Services
+@inject IMusicService MusicService
+
+<h3>Albums</h3>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h4>Nouvel Album</h4>
+            </div>
+            <div class="card-body">
+                <EditForm Model="@newAlbum" OnValidSubmit="@HandleValidSubmit">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+
+                    <div class="form-group">
+                        <label>Titre:</label>
+                        <InputText @bind-Value="newAlbum.Title" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Date de sortie:</label>
+                        <InputDate @bind-Value="newAlbum.ReleaseDate" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description:</label>
+                        <InputTextArea @bind-Value="newAlbum.Description" class="form-control" />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-3">Créer</button>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h4>Liste des Albums</h4>
+            </div>
+            <div class="card-body">
+                @if (albums == null)
+                {
+                    <p>Chargement...</p>
+                }
+                else if (!albums.Any())
+                {
+                    <p>Aucun album trouvé.</p>
+                }
+                else
+                {
+                    <div class="list-group">
+                        @foreach (var album in albums)
+                        {
+                            <div class="list-group-item">
+                                <h5 class="mb-1">@album.Title</h5>
+                                <p class="mb-1">@album.Description</p>
+                                <small>Date de sortie: @album.ReleaseDate.ToShortDateString()</small>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private IEnumerable<Album> albums;
+    private Album newAlbum = new() { ReleaseDate = DateTime.Today };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAlbums();
+    }
+
+    private async Task LoadAlbums()
+    {
+        albums = await MusicService.GetAlbums();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await MusicService.CreateAlbum(newAlbum);
+        await LoadAlbums();
+        newAlbum = new() { ReleaseDate = DateTime.Today };
+    }
+}
